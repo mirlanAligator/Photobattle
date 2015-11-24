@@ -1,0 +1,299 @@
+.layout_photobattle_winner_last_battle,
+.layout_photobattle_last_battle,
+.layout_photobattle_next_battle,
+.layout_photobattle_top_leader,
+.layout_page_photobattle_index_view
+.layout_left,
+.layout_page_photobattle_index_index .layout_main .layout_middle,
+.layout_page_photobattle_index_score .layout_main .layout_middle,
+.layout_page_photobattle_index_top10 .layout_main .layout_middle {
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 3px;
+    padding: 1.5em;
+}
+
+@media screen {
+    .player {
+        width: 44%;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .battle-players {
+        position: relative;
+    }
+
+    /*widget Top - Leader*/
+    #top-user, #player1, #player2, #player-or, .my-data, .my-photo {
+        display: inline-block;
+    }
+
+    /*Select Gender*/
+    .select-gender {
+        padding: 0.2em;
+        margin-bottom: 0.4em;
+    }
+
+    .select-gender .active, #top-users #top-user {
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 3px;
+        padding: 0.5em;
+    }
+
+    /*Select Gender active*/
+    .select-gender .active {
+        background-color: #EEEEEE;
+        cursor: default;
+    }
+
+    .select-gender a {
+        margin-right: 1.5em;
+        text-decoration: none;
+    }
+
+    .player-data div, .battle-desciption, .battle-players .player,
+    .battle-players, .user-photo, .user-data > div,
+    #top-users .top-user-photo, .winner-last-battle-widget-content,
+    .winner-last-battle-widget-content .winner h3
+    .battle-players .player-or, .last-battle-widget-content,
+    .top-10-description {
+        text-align: center;
+    }
+
+    .player-data > div, .player-data a, .battle-players #player-or > .h-or, .tip.photobattle,
+    #top-users #top-user .user-data .title a,
+    #top-users #top-user .user-data .score,
+    .my-scores .my-data div, .my-scores .my-data div a, .select-gender a,
+    .headline-battle h3 {
+        font-weight: bold;
+    }
+
+    /*OR vertical allign */
+    .battle-players div {
+        vertical-align: middle;
+    }
+
+    /*battle-players container*/
+    .battle-players, .top-10-content .select-gender {
+        margin-bottom: 2em;
+    }
+
+    .tip.photobattle {
+        margin: 0.7em
+    }
+
+    .player-data > div, .user-data > div, .top-user-photo img, .my-scores .my-data div {
+        padding: 1.2px;
+    }
+
+    #player-or > .h-or {
+        margin-left: 0.25em;
+        margin-right: 0.25em;
+        margin-bottom: 4em;
+    }
+
+    .battle-players > .player {
+        padding-bottom: 1em;
+    }
+
+    #top-users > div {
+        margin: 3px;
+        padding: 3px;
+    }
+
+    .my-scores .my-data {
+        vertical-align: top;
+        padding: 1em;
+    }
+
+    .battle-players .battle-loader, .winner-last-battle-widget-content .winner .win-user-photo {
+        background-repeat: no-repeat;
+    }
+
+    /*Loader activate*/
+    .battle-players .battle-loader {
+        background-color: #fff;
+        height: 27em;
+        opacity: 0.6;
+        position: absolute;
+        width: 100%;
+        background-position: center center;
+    }
+
+    .winner-last-battle-widget-content .winner .win-user-photo {
+        /*background-position: center center;*/
+        height: 158px;
+        /*background-size: contain;*/
+    }
+
+    .headline-battle h3 {
+        padding: 1em;
+        margin-bottom: 0.2em;
+    }
+
+    .my-scores {
+        margin: 1em;
+    }
+
+    .player-data {
+        margin-top: 1em;
+    }
+
+    .main.item_photo_user.main {
+        display: block;
+        width: 100%;
+    }
+
+    .battle-players, .battle-players .main.item_photo_user.main {
+        width: 100%;
+    }
+
+    .battle-players .player-or {
+        width: 10%;
+    }
+
+    .battle-players .player {
+        width: 40%;
+    }
+
+    .photo, .photo-widget,
+    .winner-last-battle-widget-content .winner .win-user-photo {
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+
+    /*User photo container*/
+    .photo {
+        height: 17em;
+        margin: 1em;
+    }
+
+    .photo-widget {
+        height: 7em;
+        margin: 2px
+    }
+
+}
+/*------------------- @MEDIA DINAMYC ----------------------*/
+@media screen and (max-width: 960px) {
+    .user-photo {
+        height: 16em;
+    }
+
+    .photo {
+        height: 15em;
+    }
+
+    .winner-last-battle-widget-content .winner .win-user-photo {
+        height: 140px;
+    }
+
+}
+
+@media screen and (max-width: 775px) {
+    .photo {
+        height: 14em;
+    }
+
+    .user-photo {
+        height: 14em;
+    }
+
+    .battle-players .battle-loader {
+        height: 26em;
+    }
+
+    .winner-last-battle-widget-content .winner .win-user-photo {
+        height: 140px;
+    }
+}
+
+@media screen and (max-width: 740px) {
+    .photo {
+        height: 9em;
+    }
+
+    .user-photo {
+        height: 9em;
+    }
+
+    .battle-players .battle-loader {
+        height: 18em;
+    }
+}
+
+@media screen and (max-width: 670px) {
+    .photo {
+        height: 8em;
+        margin: 0.3em;
+    }
+
+    .battle-players .battle-loader {
+        height: 17em;
+    }
+
+    .player-data {
+        margin-top: 0em;
+    }
+
+    .headline-battle h3 {
+        padding: 0.2em;
+    }
+
+    .winner-last-battle-widget-content .winner .win-user-photo {
+        height: 90px;
+    }
+
+}
+
+@media screen and (max-width: 480px) {
+    .photo {
+        height: 5em;
+        margin: 0.4em;
+    }
+
+    .user-photo {
+        height: 5em;
+    }
+
+    .battle-players .battle-loader {
+        height: 14em;
+    }
+
+    .player-data {
+        margin-top: 5px;
+    }
+
+    #player-or > .h-or {
+        margin-bottom: 2em;
+    }
+
+    .winner-last-battle-widget-content .winner .win-user-photo {
+        height: 75px;
+    }
+
+}
+
+@media screen and (max-width: 360px) {
+    .photo {
+        height: 6em;
+    }
+
+    .user-photo {
+        height: 6em;
+    }
+
+    .battle-players .battle-loader {
+        height: 13em;
+    }
+
+    #player-or > .h-or {
+        margin-bottom: 1em;
+    }
+
+}
+
+
