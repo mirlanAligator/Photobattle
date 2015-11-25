@@ -2,8 +2,8 @@
 .layout_photobattle_last_battle,
 .layout_photobattle_next_battle,
 .layout_photobattle_top_leader,
-.layout_page_photobattle_index_view
-.layout_left,
+.layout_page_photobattle_index_view .layout_left,
+.layout_photobattle_gutter_photo,
 .layout_page_photobattle_index_index .layout_main .layout_middle,
 .layout_page_photobattle_index_score .layout_main .layout_middle,
 .layout_page_photobattle_index_top10 .layout_main .layout_middle {

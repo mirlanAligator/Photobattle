@@ -54,6 +54,17 @@ return array(
         'requirements' => array(
             'no-subject',
         ),
-    )
+    ),
+
+    array(
+        'title' => 'Gutter Photo',
+        'description' => 'Displays a display photo user.',
+        'category' => 'Photo Battle',
+        'type' => 'widget',
+        'name' => 'photobattle.gutter-photo',
+        'requirements' => array(
+            'no-subject',
+        ),
+    ),
 
 ) ?>

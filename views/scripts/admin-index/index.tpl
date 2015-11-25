@@ -38,7 +38,7 @@
 <br/>
 <br/>
 
-<?php if (count($this->paginator)): ?>
+<?php if (count($this->paginator)) { ?>
 <form id='multidelete_form' method="post" action="<?php echo $this->url();?>" onSubmit="return multiDelete()">
     <table class='admin_table'>
         <thead>
@@ -89,10 +89,10 @@
     <?php echo $this->paginationControl($this->paginator); ?>
 </div>
 
-<?php else: ?>
+<?php  } else { ?>
 <div class="tip">
     <span>
       <?php echo $this->translate("There are no battle entries by your members yet.") ?>
     </span>
 </div>
-<?php endif; ?>
+<?php } ?>

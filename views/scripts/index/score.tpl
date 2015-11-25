@@ -1,25 +1,57 @@
 <div>
     <div class="headline">
         <h2>
-            <?php echo $this->translate('My Scores'); ?>
+            <?php echo $this->translate('My Battles'); ?>
         </h2>
     </div>
     <div class="my-scores">
         <?php if ($this->viewer->photo_id) { ?>
-        <div class="my-photo">
-            <?php echo $this->itemPhoto($this->viewer, 'thumb.profile') ?>
-        </div>
-        <div class="my-data">
-            <div
-                class="title"><?php echo $this->htmlLink($this->viewer->getHref(), $this->viewer->displayname); ?></div>
-            <div class="percent"><?php echo $this->viewerScore['percent'] . "%"; ?></div>
-            <!--        <div class="score">--><?php //echo $this->translate('Score'); ?>
-            <!--          : --><?php //echo $this->viewerScore['scores']; ?><!--</div>-->
-            <!--        <div class="won">--><?php //echo $this->translate('Won'); ?><!--: -->
-                <?php //echo $this->viewerScore['win']; ?><!--</div>-->
-            <!--        <div class="lost">--><?php //echo $this->translate('Lost'); ?><!--: -->
-                <?php //echo $this->viewerScore['loss']; ?><!--</div>-->
-        </div>
+        <?php if (count($this->paginator)) { ?>
+            <table class='admin_table'>
+                <thead>
+                <tr>
+
+                    <th><?php echo $this->translate("Voter") ?></th>
+                    <th><?php echo $this->translate("Player - 1") ?></th>
+                    <th><?php echo $this->translate("Player - 2") ?></th>
+                    <th><?php echo $this->translate("Win Player") ?></th>
+                    <th><?php echo $this->htmlLink(array('route' => 'admin_default', 'module' => 'photobattle', 'controller' => 'index',
+                            'action' => 'index', 'page' => $this->page, 'order' => $this->orderSort)
+                        , $this->translate("Date")); ?></th>
+
+                </tr>
+                </thead>
+                <tbody>
+
+                    <?php foreach ($this->paginator as $item) { ?>
+                <tr>
+
+                    <td><?php echo $item->getVoterUserName(); ?></td>
+                    <td><?php echo $item->getPlayer1UserName(); ?></td>
+                    <td><?php echo $item->getPlayer2UserName(); ?></td>
+                    <td><?php echo $item->getWinnerUserName(); ?></td>
+                    <td><?php echo $this->locale()->toDateTime($item->battle_date) ?></td>
+
+                </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+
+            <br/>
+            <br/>
+
+            <div>
+                <?php echo $this->paginationControl($this->paginator); ?>
+            </div>
+
+            <?php } else { ?>
+            <div class="tip">
+                <span>
+                  <?php echo $this->translate("There are no battle entries by your members yet.") ?>
+                </span>
+            </div>
+            <?php } ?>
+
         <?php } else { ?>
         <div class="tip photobattle">
             <span>
@@ -29,5 +61,4 @@
         <?php } ?>
     </div>
 
-</div>
 </div>

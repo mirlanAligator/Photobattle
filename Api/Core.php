@@ -9,7 +9,7 @@
 
 class Photobattle_Api_Core extends Core_Api_Abstract
 {
-    public function getGender($viewer, $action)
+    public function getGender($viewer, $action = 'index')
     {
         $userSettings = Engine_Api::_()->getDbTable('settings', 'user');
         if ($action == 'index') {

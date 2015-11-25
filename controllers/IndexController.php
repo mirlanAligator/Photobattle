@@ -6,6 +6,8 @@ class Photobattle_IndexController extends Core_Controller_Action_Standard
     {
         //        $this->debugging();
         $this->view->viewer = $viewer = Engine_Api::_()->user()->getViewer();
+//        print_die(Engine_Api::_()->fields()->getFieldsValuesByAlias($viewer));
+        print_die(Engine_Api::_()->fields()->getFieldsOptions($viewer));
         if ($viewer->getIdentity()) {
 
 //            $this->getPlayUsers();
@@ -148,18 +150,20 @@ class Photobattle_IndexController extends Core_Controller_Action_Standard
 
     public function scoreAction()
     {
-
         // check User sign in
         if (!$this->_helper->requireUser()->isValid()) {
             return;
         }
 
-        $this->view->score = 'My Score';
-        $viewer = Engine_Api::_()->user()->getViewer();
+        $this->view->viewer = $viewer = Engine_Api::_()->user()->getViewer();
 
-        $scoreTable = Engine_Api::_()->getDbTable('scores', 'photobattle');
-        $this->view->viewer = $viewer;
-        $this->view->viewerScore = $scoreTable->getUserScoreData($viewer->user_id);
+        $scoreTable = Engine_Api::_()->getItemTable('photobattle_score');
+        $battlesTable = Engine_Api::_()->getItemTable('photobattle_battle');
+
+        $this->view->page = $page = $this->_getParam('page', 1);
+        $this->view->paginator = $battlesTable->getBattlesPaginator(
+            array('page' => $page, 'limit' => 10, 'order' => 'ASC')
+        );
 
         // Render
         $this->_helper->content
