@@ -189,6 +189,7 @@ class Photobattle_IndexController extends Core_Controller_Action_Standard
 
         $paginatorSelect = $battlesTable->getMyBattleSelect(array('user_id' => $user->user_id));
 
+        $this->view->scoreTable = $scoreTable;
         $this->view->page = $page = $this->_getParam('page', 1);
         $this->view->user = $user;
 

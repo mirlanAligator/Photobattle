@@ -239,8 +239,7 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
         $percent = $this->getUserPercent($user_id);
         $fvaluesTable = Engine_Api::_()->fields()->getTable('user', 'values');
         $userTable = Engine_Api::_()->getItemTable('user');
-        if (empty($user_id))
-        {
+        if (empty($user_id)) {
             return null;
         }
         $select = $userTable
@@ -256,11 +255,11 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
             ->where('users.photo_id <> ?', 0)
             ->where('users.enabled = ?', 1)
             ->where('users.approved = ?', 1)
-            ->where('users.user_id <> ?', $user_id)
-            ->where('bscores.percent > ?', $percent)
+            ->where('bscores.percent >= ?', $percent)
+            ->group('bscores.percent')
             ->order('bscores.percent DESC');
         $rows = $userTable->fetchAll($select);
-        return count($rows) + 1;
+        return count($rows);
     }
 
 }
