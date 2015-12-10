@@ -25,9 +25,40 @@ class Photobattle_Api_Core extends Core_Api_Abstract
         return $gender;
     }
 
-    public function getSession() {
-        $session = new Zend_Session_Namespace('PhotoBattleSession');
+    public function getSession()
+    {
+        $viewer = Engine_Api::_()->user()->getViewer();
+        $viewer_id = $viewer->getIdentity();
+        if (!$viewer_id) {
+            return null;
+        }
+        $session = new Zend_Session_Namespace("PhotoBattleSessionUser_$viewer_id");
         return $session;
+    }
+
+    public function getGenderFieldId()
+    {
+        $fMetaTable = Engine_Api::_()->fields()->getTable('user', 'meta');
+        $select = $fMetaTable->select()->where('type = ?', 'gender');
+        $meta = $fMetaTable->fetchRow($select);
+        return $meta->field_id;
+    }
+
+    public function getGenders()
+    {
+        $fOptionTable = Engine_Api::_()->fields()->getTable('user', 'options');
+        $getderFieldId = $this->getGenderFieldId();
+        $select = $fOptionTable->select()->where('field_id = ?', $getderFieldId);
+        $genders = $fOptionTable->fetchAll($select);
+        return $genders;
+    }
+
+    public function getGenderRow($optionId)
+    {
+        $fOptionTable = Engine_Api::_()->fields()->getTable('user', 'options');
+        $select = $fOptionTable->select()->where('option_id = ?', $optionId);
+        $genderRow = $fOptionTable->fetchRow($select);
+        return $genderRow;
     }
 }
  

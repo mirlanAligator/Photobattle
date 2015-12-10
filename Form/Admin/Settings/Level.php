@@ -38,5 +38,40 @@ class Photobattle_Form_Admin_Settings_Level extends Authorization_Form_Admin_Lev
                                                 'value' =>  1,
                                            ));
 
+        // Element: view page Top10
+        $this->addElement('Radio', 'view_top10', array(
+                                                'label' => 'To allow viewing of the     Top 10 page?',
+                                                'description' => 'Do you want to permit to participants viewing of the Top10 page? If set to no, some other settings on this page may not apply.',
+                                                'multiOptions' => array(
+                                                    1 => 'Yes I allow viewing of the Top10 page.',
+                                                    0 => "No, I don't allow viewing of the Top10 page.",
+                                                ),
+                                                'value' =>  1,
+                                           ));
+
+
+        // Element: view page My Scores
+        $this->addElement('Radio', 'view_score', array(
+                                                'label' => "To allow viewing of the My Scores page?",
+                                                'description' => "Do you want to permit to participants viewing of the My Scores page? If set to no, some other settings on this page may not apply.",
+                                                'multiOptions' => array(
+                                                    1 => "Yes I allow viewing of the My Scores page",
+                                                    0 => "No, I don't allow viewing of the My Scores page.",
+                                                ),
+                                                'value' =>  1,
+                                           ));
+
+
+        // Element: view page My Scores
+        $this->addElement('Radio', 'stranger_score', array(
+                                                'label' => "To allow viewing of results of battle of other users?",
+                                                'description' => "You want to allow this level to view results of battle of other users? If set to no, some other settings on this page may not apply.",
+                                                'multiOptions' => array(
+                                                    1 => "Yes I allow to view results of battle of other users.",
+                                                    0 => "No, I don't allow to view results of battle of other users.",
+                                                ),
+                                                'value' =>  1,
+                                           ));
+
     }
 }

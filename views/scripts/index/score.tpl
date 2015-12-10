@@ -1,64 +1,136 @@
-<div>
-    <div class="headline">
-        <h2>
+<div class="my-score-page-content">
+  <!--    Check view Permision-->
+  <?php if ($this->permission) { ?>
+    <?php if ($this->viewer->photo_id != 0) { ?>
+
+      <div class="photobattle-my-scores-mobile">
+        <div class="my-scores">
+            <div class="my-photo">
+              <?php echo $this->itemPhoto($this->user, 'thumb.profile') ?>
+            </div>
+            <div class="my-data">
+              <div class="title"><?php echo $this->htmlLink($this->user->getHref(), $this->user->displayname); ?></div>
+              <div class="percent"><?php echo $this->userScore['percent'] . "%"; ?></div>
+              <div class="win"><?php echo $this->translate('Winners') . " : " . $this->userScore['win']; ?></div>
+              <div class="loss"><?php echo $this->translate('Losses') . " : " . $this->userScore['loss']; ?></div>
+              <div class="place"><?php echo $this->translate('Place') . " : " . $this->userPlace; ?></div>
+            </div>
+        </div>
+      </div>
+
+      <?php if ($this->viewer->getIdentity() == $this->user->getIdentity()) { ?>
+        <div class="headline">
+          <h2>
             <?php echo $this->translate('My Battles'); ?>
-        </h2>
-    </div>
-    <div class="my-scores">
-        <?php if ($this->viewer->photo_id) { ?>
-        <?php if (count($this->paginator)) { ?>
-            <table class='admin_table'>
-                <thead>
-                <tr>
+          </h2>
+        </div>
+      <?php } else { ?>
+        <div class="headline">
+          <h2>
+            <?php echo $this->translate('Battles'); ?>
+          </h2>
+        </div>
+      <?php } ?>
 
-                    <th><?php echo $this->translate("Voter") ?></th>
-                    <th><?php echo $this->translate("Player - 1") ?></th>
-                    <th><?php echo $this->translate("Player - 2") ?></th>
-                    <th><?php echo $this->translate("Win Player") ?></th>
-                    <th><?php echo $this->htmlLink(array('route' => 'admin_default', 'module' => 'photobattle', 'controller' => 'index',
-                            'action' => 'index', 'page' => $this->page, 'order' => $this->orderSort)
-                        , $this->translate("Date")); ?></th>
+      <?php if (count($this->paginator)) { ?>
+        <div class="my-scores">
+          <div class="heading-score">
+            <div class="winner"><?php echo $this->translate('Winner'); ?></div>
+            <div class="loser"><?php echo $this->translate('Loser'); ?></div>
+            <div class="voter"><?php echo $this->translate('Voter'); ?></div>
+          </div>
 
-                </tr>
-                </thead>
-                <tbody>
+          <div class="body-score">
 
-                    <?php foreach ($this->paginator as $item) { ?>
-                <tr>
+            <?php foreach ($this->paginator as $battle) { ?>
+              <div class="winner-user score-user">
+                <div class="user-photo">
+                  <?php echo $this->itemPhoto($battle->getWinnerUser(), 'thumb.icon'); ?>
+                </div>
+                <div class="user-name">
+                  <?php echo $this->user->getIdentity() != $battle->getWinnerUser()->getIdentity() && $this->permissionOtherMyScores ?
+                    $this->htmlLink(array('action' => 'score', 'user' => $battle->getWinnerUser()->getIdentity()),
+                      $battle->getWinnerUser()->getTitle())
+                    : $battle->getWinnerUser()->getTitle();
+                  ?>
+                </div>
+              </div>
 
-                    <td><?php echo $item->getVoterUserName(); ?></td>
-                    <td><?php echo $item->getPlayer1UserName(); ?></td>
-                    <td><?php echo $item->getPlayer2UserName(); ?></td>
-                    <td><?php echo $item->getWinnerUserName(); ?></td>
-                    <td><?php echo $this->locale()->toDateTime($item->battle_date) ?></td>
+              <div class="loser-user score-user">
+                <div class="user-photo">
+                  <?php echo $this->itemPhoto($battle->getLoserUser(), 'thumb.icon'); ?>
+                </div>
+                <div class="user-name">
+                  <?php echo $this->user->getIdentity() != $battle->getLoserUser()->getIdentity() && $this->permissionOtherMyScores ?
+                    $this->htmlLink(array('action' => 'score', 'user' => $battle->getLoserUser()->getIdentity()),
+                      $battle->getLoserUser()->getTitle()) : $battle->getLoserUser()->getTitle();
+                  ?>
+                </div>
+              </div>
 
-                </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
+              <div class="voter-user score-user">
+                <div class="user-photo">
+                  <?php echo $this->itemPhoto($battle->getVoterUser(), 'thumb.icon'); ?>
+                </div>
+                <div class="user-name">
+                  <?php echo ($this->user->getIdentity() != $battle->getVoterUser()->getIdentity() &&
+                    $battle->getVoterUser()->photo_id != 0) && $this->permissionOtherMyScores ?
+                    $this->htmlLink(array('action' => 'score', 'user' => $battle->getVoterUser()->getIdentity()),
+                      $battle->getVoterUser()->getTitle())
+                    : $battle->getVoterUser()->getTitle();
+                  ?>
+                </div>
+              </div>
 
-            <br/>
-            <br/>
-
-            <div>
-                <?php echo $this->paginationControl($this->paginator); ?>
-            </div>
-
-            <?php } else { ?>
-            <div class="tip">
-                <span>
-                  <?php echo $this->translate("There are no battle entries by your members yet.") ?>
-                </span>
-            </div>
             <?php } ?>
+          </div>
+          <br/>
+          <br/>
+          <?php echo $this->paginationControl($this->paginator); ?>
+        </div>
+      <?php } else { ?>
 
-        <?php } else { ?>
+        <?php if ($this->viewer->getIdentity() == $this->user->getIdentity()) { ?>
         <div class="tip photobattle">
             <span>
-                <?php echo $this->translate('NO_PHOTO'); ?>
+                <?php echo $this->translate("You didn't participate in one battle yet."); ?>
             </span>
         </div>
+        <?php } else {?>
+          <div class="tip photobattle">
+            <span>
+          <?php echo $this->translate("This user didn't participate in one battle yet."); ?>
+            </span>
+          </div>
         <?php } ?>
-    </div>
 
+      <?php } ?>
+
+      <!--    Photo Id = 0-->
+    <?php } else { ?>
+      <div class="headline">
+        <h2>
+          <?php echo $this->translate("My Scores"); ?>
+        </h2>
+      </div>
+      <div class="tip photobattle">
+        <span>
+            <?php echo $this->translate("NO_PHOTO"); ?>
+        </span>
+      </div>
+    <?php } ?>
+
+    <!--     else permission = 0-->
+  <?php } else { ?>
+    <div class="headline">
+      <h2>
+        <?php echo $this->translate("My Scores"); ?>
+      </h2>
+    </div>
+    <div class="tip photobattle">
+        <span>
+            <?php echo $this->translate("You have no permission of viewing of this page."); ?>
+        </span>
+    </div>
+  <?php } ?>
 </div>

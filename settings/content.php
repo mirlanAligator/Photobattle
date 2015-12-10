@@ -66,5 +66,38 @@ return array(
             'no-subject',
         ),
     ),
+//
+//    array(
+//        'title' => 'Top 10 Male',
+//        'description' => 'Displays a Top 10 Male users.',
+//        'category' => 'Photo Battle',
+//        'type' => 'widget',
+//        'name' => 'photobattle.top-male',
+//        'requirements' => array(
+//            'no-subject',
+//        ),
+//    ),
+//
+//    array(
+//        'title' => 'Top 10 Female',
+//        'description' => 'Displays a Top 10 Female users.',
+//        'category' => 'Photo Battle',
+//        'type' => 'widget',
+//        'name' => 'photobattle.top-female',
+//        'requirements' => array(
+//            'no-subject',
+//        ),
+//    ),
+//
+//    array(
+//        'title' => 'Top 10 Gener3',
+//        'description' => 'Displays a Top 10 Gender3 users.',
+//        'category' => 'Photo Battle',
+//        'type' => 'widget',
+//        'name' => 'photobattle.top-gender3',
+//        'requirements' => array(
+//            'no-subject',
+//        ),
+//    ),
 
 ) ?>

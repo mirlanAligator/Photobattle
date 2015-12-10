@@ -24,12 +24,12 @@ class Photobattle_Plugin_Core
                 // Delete scores -------------
                 if ($userScore->photo_id != $user->photo_id) {
                     $userScore->delete();
-                }
 
                 //Delete Battles --------------
                 $battleTable = Engine_Api::_()->getItemTable('photobattle_battle');
                 //Removal of all the battles that the user was
                 $battleTable->deleteUserParticipateBattles($user_id);
+                }
             }
         }
 

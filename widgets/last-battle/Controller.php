@@ -10,15 +10,15 @@ class Photobattle_Widget_LastBattleController extends Engine_Content_Widget_Abst
 {
     public function indexAction()
     {
-        //        Loading tables and necessary data
         $this->view->viewer = $viewer = Engine_Api::_()->user()->getViewer();
-        $battleTable = Engine_Api::_()->getDbTable('battles', 'photobattle');
-        $scoreTable = Engine_Api::_()->getDbTable('scores', 'photobattle');
-
 
         if ($viewer->getIdentity() == 0) {
             return $this->setNoRender();
         }
+
+        //        Loading tables and necessary data
+        $battleTable = Engine_Api::_()->getDbTable('battles', 'photobattle');
+        $scoreTable = Engine_Api::_()->getDbTable('scores', 'photobattle');
 
         $battle = $battleTable->getLastBattle($viewer);
         $this->view->battle = $battle;
@@ -26,7 +26,7 @@ class Photobattle_Widget_LastBattleController extends Engine_Content_Widget_Abst
             $player1 = Engine_Api::_()->getItem('user', $battle->player1_id);
             $player2 = Engine_Api::_()->getItem('user', $battle->player2_id);
 
-            if (!empty($player1) && !empty($player2)) {
+            if ($player1->getIdentity() && $player2->getIdentity()) {
 
                 $this->view->player1ScoreData = $scoreTable->getUserScoreData($player1->user_id);
                 $this->view->player2ScoreData = $scoreTable->getUserScoreData($player2->user_id);

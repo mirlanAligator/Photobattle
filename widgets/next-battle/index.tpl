@@ -33,6 +33,7 @@
         </div>
     </div>
     <!-------------------------------------->
+
     <?php } else { ?>
     <div class="tip photobattle">
             <span>

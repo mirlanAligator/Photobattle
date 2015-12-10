@@ -11,6 +11,11 @@ class Photobattle_Widget_NextBattleController extends Engine_Content_Widget_Abst
 {
     public function indexAction()
     {
+        $this->view->viewer = $viewer = Engine_Api::_()->user()->getViewer();
+        if ($viewer->getIdentity() == 0) {
+            return $this->setNoRender();
+        }
+
         $pbSession = Engine_Api::_()->photobattle()->getSession();
         if (!empty($pbSession->players)) {
             $players = $pbSession->players;
@@ -30,6 +35,7 @@ class Photobattle_Widget_NextBattleController extends Engine_Content_Widget_Abst
             //        Output User2 to view
             $this->view->user2 = $user2;
             $this->view->user2Score = $user2Score;
+            $this->view->players = $players;
         } else {
             $this->view->noPlayers = true;
         }

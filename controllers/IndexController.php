@@ -4,15 +4,15 @@ class Photobattle_IndexController extends Core_Controller_Action_Standard
 {
     public function indexAction()
     {
-        //        $this->debugging();
         $this->view->viewer = $viewer = Engine_Api::_()->user()->getViewer();
-//        print_die(Engine_Api::_()->fields()->getFieldsValuesByAlias($viewer));
-        print_die(Engine_Api::_()->fields()->getFieldsOptions($viewer));
+        //        print_die(Engine_Api::_()->fields()->getFieldsValuesByAlias($viewer));
+        //                print_die(Engine_Api::_()->fields()->getFieldsOptions($viewer));
         if ($viewer->getIdentity()) {
 
-//            $this->getPlayUsers();
             // Permissions
             if ($this->_helper->requireAuth()->setAuthParams('photobattle', $viewer, 'view')->isValid()) {
+
+                $this->view->genders = $genders = Engine_Api::_()->photobattle()->getGenders();
 
                 // Get Vote permissions
                 $permissionsTable = Engine_Api::_()->getDbtable('permissions', 'authorization');
@@ -30,7 +30,6 @@ class Photobattle_IndexController extends Core_Controller_Action_Standard
                 $scoreTable = Engine_Api::_()->getItemTable('photobattle_score');
 
                 $players = $this->getPlayUsers($viewer, $gender);
-//                print_die($players);
 
                 if (!empty($players)) {
 
@@ -49,6 +48,7 @@ class Photobattle_IndexController extends Core_Controller_Action_Standard
                     //        Output User2 to view
                     $this->view->user2 = $user2;
                     $this->view->user2Score = $user2Score;
+                    $this->view->players = $players;
                 } else {
                     $this->view->noPlayers = true;
                 }
@@ -67,62 +67,63 @@ class Photobattle_IndexController extends Core_Controller_Action_Standard
 
     public function vote()
     {
-        // check User sign in
-        if (!$this->_helper->requireUser()->isValid()) {
+        $wonUserId = $this->getParam('won');
+        $lossUserId = $this->getParam('loss');
+        $wonPlayer = $this->getParam('wonplayer');
+
+        // Check get request
+        if (empty($wonPlayer) || empty($wonUserId) || empty($lossUserId)) {
+            return false;
+        }
+        //Get users Models
+        $wonUser = Engine_Api::_()->getItem('user', $wonUserId);
+        $lossUser = Engine_Api::_()->getItem('user', $lossUserId);
+
+        // Check user empty
+        if (empty($wonUser) || empty($lossUser)) {
             return false;
         }
 
+
+        $battleTable = Engine_Api::_()->getItemTable('photobattle_battle');
+        $this->view->viewer = $viewer = Engine_Api::_()->user()->getViewer();
+
+        //Update Users Score
+        $scoreTable = Engine_Api::_()->getItemTable('photobattle_score');
+        $wonUserScore = $scoreTable->getUserScore($wonUser->user_id);
+        $lossUserScore = $scoreTable->getUserScore($lossUser->user_id);
+
+        $wonUserWinsLoss = $scoreTable->getUserWinsLoss($wonUser->user_id);
+        $lossUserWinsLoss = $scoreTable->getUserWinsLoss($lossUser->user_id);
+
+        //get new Users Scores
+        $wonUserNewScore = $this->getNewScore($wonUserScore, $lossUserScore, 1);
+        $lossUserNewScore = $this->getNewScore($lossUserScore, $wonUserScore, 0);
+
+        $wonUserNewPercent = $this->getNewPercent($wonUserWinsLoss['win'], $wonUserWinsLoss['loss'], 1);
+        $lossUserNewPercent = $this->getNewPercent($lossUserWinsLoss['win'], $lossUserWinsLoss['loss'], 0);
+
+        //flow calculation
+        $score_expense = $wonUserNewScore - $wonUserScore;
+
+        //Begin Transaction set Valuesx
+        $db = $battleTable->getAdapter();
         try {
-
-            //Get Data of play
-            $wonUserId = $this->getParam('won');
-            $lossUserId = $this->getParam('loss');
-            $wonPlayer = $this->getParam('wonplayer');
-
-            // Check get request
-            if (empty($wonPlayer) || empty($wonUserId) || empty($lossUserId)) {
-                return false;
-            }
-            //Get users Models
-            $wonUser = Engine_Api::_()->getItem('user', $wonUserId);
-            $lossUser = Engine_Api::_()->getItem('user', $lossUserId);
-
-            // Check user empty
-            if (empty($wonUser) || empty($lossUser)) {
-                return false;
-            }
-
-
-            $battleTable = Engine_Api::_()->getDbTable('battles', 'photobattle');
-            $this->view->viewer = $viewer = Engine_Api::_()->user()->getViewer();
-
-            //Update Users Score
-            $scoreTable = Engine_Api::_()->getItemTable('photobattle_score');
-            $wonUserScore = $scoreTable->getUserScore($wonUser->user_id);
-            $lossUserScore = $scoreTable->getUserScore($lossUser->user_id);
-
-            $wonUserWinsLoss = $scoreTable->getUserWinsLoss($wonUser->user_id);
-            $lossUserWinsLoss = $scoreTable->getUserWinsLoss($lossUser->user_id);
-
-            //get new Users Scores
-            $wonUserNewScore = $this->getNewScore($wonUserScore, $lossUserScore, 1);
-            $lossUserNewScore = $this->getNewScore($lossUserScore, $wonUserScore, 0);
-
-            $wonUserNewPercent = $this->getNewPercent($wonUserWinsLoss['win'], $wonUserWinsLoss['loss'], 1);
-            $lossUserNewPercent = $this->getNewPercent($lossUserWinsLoss['win'], $lossUserWinsLoss['loss'], 0);
-
-            //            print_die($wonUserNewPercent);
-            //flow calculation
-            $score_expense = $wonUserNewScore - $wonUserScore;
-
+            $db->beginTransaction();
             //Create battle
-            $battleTable->createBattle($wonPlayer, $wonUser, $lossUser, $viewer, $score_expense);
+            $newBattleId = $battleTable->createBattle($wonPlayer, $wonUser, $lossUser, $viewer, $score_expense);
 
-            //Update Users Score
-            $scoreTable->updateUserScore($wonUser, $wonUserNewScore, $wonUserNewPercent, true);
-            $scoreTable->updateUserScore($lossUser, $lossUserNewScore, $lossUserNewPercent, false);
+            if ($newBattleId) {
+                //Update Users Score
+                $scoreTable->updateUserScore($wonUser, $wonUserNewScore, $wonUserNewPercent, true);
+                $scoreTable->updateUserScore($lossUser, $lossUserNewScore, $lossUserNewPercent, false);
+            }
+            $db->commit();
+            //            $pbSess = Engine_Api::_()->photobattle()->getsession();
+            //            $pbSess->players = array();
             return true;
         } catch (Exception $e) {
+            $db->rollBack();
             throw $e;
         }
 
@@ -132,17 +133,23 @@ class Photobattle_IndexController extends Core_Controller_Action_Standard
     {
         $battleTable = Engine_Api::_()->getItemTable('photobattle_battle');
 
-        $players = $battleTable->getPlayUsers($viewer, $gender);
 
         $pbSession = Engine_Api::_()->photobattle()->getsession();
 
-        if (!empty($pbSession->players)) {
-            $result = $pbSession->players;
-        } else {
-            $result = $players;
+        if (empty($pbSession->players)) {
+            $pbSession->players = $battleTable->getPlayUsers($viewer, $gender);
+            $pbSession->viewer_id = $viewer->getIdentity();
+
         }
-        $pbSession->players = $battleTable->getPlayUsers($viewer, $gender, $players['battle_hash_c']);
-//        print_arr($pbSession->players);
+
+        $result = $pbSession->players;
+
+        if (!empty($result['battle_hash_c']) && $battleTable->battleHashExists($result['battle_hash_c'])) {
+            $pbSession->players = $battleTable->getPlayUsers($viewer, $gender);
+            $result = $pbSession->players;
+        }
+        $pbSession->players = $battleTable->getPlayUsers($viewer, $gender, $result['battle_hash_c']);
+
         return $result;
 
     }
@@ -156,19 +163,44 @@ class Photobattle_IndexController extends Core_Controller_Action_Standard
         }
 
         $this->view->viewer = $viewer = Engine_Api::_()->user()->getViewer();
+        //check Permission
+        $permissionsTable = Engine_Api::_()->getDbtable('permissions', 'authorization');
+        $this->view->permission = $votePermission = $permissionsTable->
+            getAllowed('photobattle', $viewer->level_id, 'view_score');
 
-        $scoreTable = Engine_Api::_()->getItemTable('photobattle_score');
+        //Check permission other users battle results
+        $this->view->permissionOtherMyScores = $permissionOtherMyScores = $permissionsTable->
+            getAllowed('photobattle', $viewer->level_id, 'stranger_score');
+
+        if ($permissionOtherMyScores) {
+            $user = $this->_getParam('user') ? Engine_Api::_()->getItem('user', $this->_getParam('user')) : $viewer;
+            $user = $user->getIdentity() ? $user : $viewer;
+        } else {
+            $user = $viewer;
+        }
+
+        Engine_Api::_()->core()->setSubject($user);
+
         $battlesTable = Engine_Api::_()->getItemTable('photobattle_battle');
+        $scoreTable = Engine_Api::_()->getItemTable('photobattle_score');
+        $userValues = Engine_Api::_()->fields()->getFieldsValuesByAlias($user);
+        $gender = $userValues['gender'];
+
+        $paginatorSelect = $battlesTable->getMyBattleSelect(array('user_id' => $user->user_id));
 
         $this->view->page = $page = $this->_getParam('page', 1);
-        $this->view->paginator = $battlesTable->getBattlesPaginator(
-            array('page' => $page, 'limit' => 10, 'order' => 'ASC')
-        );
+        $this->view->user = $user;
 
+        $this->view->userScore = $scoreTable->getUserScoreData($user->user_id);
+        $this->view->userPlace = $scoreTable->getUserPlace($gender, $user->user_id);
+
+        $this->view->paginator = $battlesTable->getBattlesPaginator(
+            array('page' => $page, 'limit' => 10, 'order' => 'DESC'), $paginatorSelect);
         // Render
         $this->_helper->content
             ->setEnabled();
     }
+
 
     public function top10Action()
     {
@@ -178,21 +210,22 @@ class Photobattle_IndexController extends Core_Controller_Action_Standard
         }
 
         $this->view->viewer = $viewer = Engine_Api::_()->user()->getViewer();
-
+        $this->view->genders = $genders = Engine_Api::_()->photobattle()->getGenders();
         // Get View permissions
         $permissionsTable = Engine_Api::_()->getDbtable('permissions', 'authorization');
         $this->view->permission = $votePermission = $permissionsTable->
-        getAllowed('photobattle', $viewer->level_id, 'view_top10');
-//        print_die($this->view->votePermission);
+            getAllowed('photobattle', $viewer->level_id, 'view_top10');
 
         //        Loading tables and necessary data
         $scoreTable = Engine_Api::_()->getDbTable('scores', 'photobattle');
+
         $this->view->gender = $gender = Engine_Api::_()->photobattle()->getGender($viewer, 'top10');
 
-//        Get Top 10
+        //        Get Top 10
+        $this->view->scoreTable = $scoreTable;
         $topUsers = $scoreTable->getLeaderUsersPercent($gender, 10);
 
-//        Output to view
+        //        Output to view
         $this->view->topUsers = $topUsers;
 
         // Render
@@ -215,7 +248,7 @@ class Photobattle_IndexController extends Core_Controller_Action_Standard
         if ($this->getRequest()->isGet()) {
             $action = $this->getParam('a');
 
-//            Check getting actions
+            //            Check getting actions
             if (empty($action) || !in_array($action, $actions)) {
                 return $this->_helper->redirector->gotoRoute(array('action' => 'index'));
             }
@@ -240,12 +273,10 @@ class Photobattle_IndexController extends Core_Controller_Action_Standard
     public function renderwidgetAction()
     {
         if ($this->getRequest()->isPost()) {
-            $photoBattleWidgets = array('winner-last-battle', 'top-leader');
+            $photoBattleWidgets = array('winner-last-battle', 'top-leader', 'next-battle', 'last-battle');
             $widgetName = $this->getParam('widget');
-            //            print_die(in_array($widgetName, $photoBattleWidgets));
 
             if (!empty($widgetName) && in_array($widgetName, $photoBattleWidgets)) {
-                //                print_die($widgetName);
                 $this->view->widgetName = $widgetName;
             }
         }
@@ -270,8 +301,8 @@ class Photobattle_IndexController extends Core_Controller_Action_Standard
             $playerLosses = $playerLosses + 1;
         }
 
-        $percent = round((100 / ($playerWons + $playerLosses)) * $playerWons);
-        //$percent = round($percent, 2, PHP_ROUND_HALF_EVEN);
+        $percent = (100 / ($playerWons + $playerLosses)) * $playerWons;
+        $percent = round($percent, 2, PHP_ROUND_HALF_EVEN);
         return $percent;
     }
 

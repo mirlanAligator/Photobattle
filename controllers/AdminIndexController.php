@@ -47,11 +47,11 @@ class Photobattle_AdminIndexController extends Core_Controller_Action_Admin
 
         $this->view->page = $page = $this->_getParam('page', 1);
 
-        $order = $this->_getParam('order', "ASC");
+        $order = $this->_getParam('order', "DESC");
         $this->view->orderSort = $orderSort = $order == "ASC" ? "DESC" : "ASC";
-
+        $paginatopSelect = $battleTable->getBattlesSelect(array('page' => $page, 'limit' => 15, 'order' => $order));
         $this->view->paginator = $battleTable
-                ->getBattlesPaginator(array('page' => $page, 'limit' => 15, 'order' => $order));
+                ->getBattlesPaginator(array('page' => $page, 'limit' => 15, 'order' => $order), $paginatopSelect);
     }
 
     public function deleteAction()
@@ -137,7 +137,7 @@ class Photobattle_AdminIndexController extends Core_Controller_Action_Admin
             }
         }
 
-        $order = $this->_getParam('order', "ASC");
+        $order = $this->_getParam('order', "DESC");
         $this->view->orderSort = $order == "ASC" ? "DESC" : "ASC";
 
         $this->view->page = $page = $this->_getParam('page', 1);

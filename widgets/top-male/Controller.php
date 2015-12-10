@@ -6,7 +6,7 @@
  * Time: 16:37
  * To change this template use File | Settings | File Templates.
  */
-class Photobattle_Widget_TopLeaderController extends Engine_Content_Widget_Abstract
+class Photobattle_Widget_TopMaleController extends Engine_Content_Widget_Abstract
 {
     public function indexAction()
     {
@@ -14,10 +14,7 @@ class Photobattle_Widget_TopLeaderController extends Engine_Content_Widget_Abstr
         $this->view->viewer = $viewer = Engine_Api::_()->user()->getViewer();
         $scoreTable = Engine_Api::_()->getDbTable('scores', 'photobattle');
 
-        $gender = Engine_Api::_()->photobattle()->getGender($viewer);
-        $this->view->genderLabel = Engine_Api::_()->photobattle()->getGenderRow($gender)->label;
-
-        $topUsers = $scoreTable->getLeaderUsersPercent($gender, 10);
+        $topUsers = $scoreTable->getLeaderUsersPercent(2, 10);
 
         if (!count($topUsers)) {
             return $this->setNoRender();

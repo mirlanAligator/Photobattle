@@ -11,18 +11,18 @@ class Photobattle_Model_DbTable_Battles extends Engine_Db_Table
 {
     protected $_rowClass = "Photobattle_Model_Battle";
 
-    public function getPlayUsers($viewer, $gender, $prevBattleHash = "")
+    private function getPlayUsersSelect($viewer, $gender, $sessBattleHash = null)
     {
         $viewer_id = $viewer->user_id;
         $userTable = Engine_Api::_()->getItemTable('user');
         $battleTable = Engine_Api::_()->getDbTable('battles', 'photobattle');
         $valuessTable = Engine_Api::_()->fields()->getTable('user', 'values');
-        $orWhere = $prevBattleHash ? "OR IF(users1.user_id > users2.user_id, CONCAT($viewer_id, users1.password, users2.password), CONCAT($viewer_id, users2.password, users1.password)) = '$prevBattleHash'" : "";
+
         $select = $userTable
             ->select()
             ->setIntegrityCheck(false)
             ->from(array('users1' => $userTable->info('name')), array('user1' => 'users1.user_id', 'user2' => 'users2.user_id',
-            'battle_hash_c' => new Zend_Db_Expr("IF(users1.user_id > users2.user_id, CONCAT($viewer_id, users1.password, users2.password), CONCAT($viewer_id, users2.password, users1.password))")))
+            'battle_hash_c' => new Zend_Db_Expr("IF(users1.user_id > users2.user_id, CONCAT($viewer_id, users1.user_id + users2.user_id, users1.password, users2.password), CONCAT($viewer_id, users1.user_id + users2.user_id, users2.password, users1.password))")))
             ->join(array('users2' => $userTable->info('name')),
             "users1.photo_id <> 0 AND
         users2.photo_id <> 0 AND
@@ -30,6 +30,8 @@ class Photobattle_Model_DbTable_Battles extends Engine_Db_Table
         users2.user_id <> $viewer_id AND
         users1.enabled = 1 AND
         users2.enabled = 1 AND
+        users1.approved = 1 AND
+        users2.approved = 1 AND
         users1.user_id <> users2.user_id"
             , array())
             ->join(array('fvalues2' => $valuessTable->info('name')),
@@ -43,26 +45,46 @@ class Photobattle_Model_DbTable_Battles extends Engine_Db_Table
         fvalues1.value = $gender"
             , array())
             ->joinLeft(array('battles' => $battleTable->info('name')),
-            'battles.battle_hash = ' . new Zend_Db_Expr("IF(users1.user_id > users2.user_id, CONCAT($viewer_id, users1.password, users2.password), CONCAT($viewer_id, users2.password, users1.password)) " . $orWhere), array())
+            'battles.battle_hash = ' . new Zend_Db_Expr("IF(users1.user_id > users2.user_id,
+             CONCAT($viewer_id, users1.user_id + users2.user_id, users1.password, users2.password),
+             CONCAT($viewer_id, users1.user_id + users2.user_id, users2.password, users1.password))"), array())
             ->where(new Zend_Db_Expr('battles.battle_hash IS NULL'))
             ->group(new Zend_Db_Expr('battle_hash_c'))
-            ->order("RAND()")
-            ->limit(1);
-        $row = $userTable->fetchAll($select)->toArray();
-        $users = $row[0];
-        return $users;
+            ->order("RAND()");
+        if (!$sessBattleHash) {
+            $select->limit(1);
+        }
+        return $select;
+    }
+
+    public function getPlayUsers($viewer, $gender, $sessBattleHash = null)
+    {
+        $select = $this->getPlayUsersSelect($viewer, $gender, $sessBattleHash);
+        $userTable = Engine_Api::_()->getItemTable('user');
+        if (!$sessBattleHash) {
+            $row = $userTable->fetchAll($select)->toArray();
+            $users = empty($row) ? null : $row[0];
+            return $users;
+        } else {
+            $select = new Zend_Db_Expr("SELECT * FROM ($select) AS pbs WHERE (pbs.battle_hash_c <> '$sessBattleHash') LIMIT 1");
+            $row = $this->getDefaultAdapter()->fetchAll($select . "");
+            $users = empty($row) ? null : $row[0];
+            return $users;
+        }
     }
 
     public function createBattle($wonPlayer, $wonUser, $lossUser, $viewer, $score_expense)
     {
         //    Formation values
         $values = array();
+        $summIds = $wonUser->user_id + $lossUser->user_id;
         $values['battle_hash'] = $wonUser->user_id > $lossUser->user_id ?
-            "$viewer->user_id" . $wonUser->password . $lossUser->password :
-            "$viewer->user_id" . $lossUser->password . $wonUser->password;
+            $viewer->user_id . $summIds . $wonUser->password . $lossUser->password :
+            $viewer->user_id . $summIds . $lossUser->password . $wonUser->password;
 
-        //    Check battle exists
+        //            Check battle exists
         if (!$this->battleHashExists($values['battle_hash'])) {
+            //            print_arr($values['battle_hash'] . "  Exists!!  |  $wonUser->user_id * $lossUser->user_id");
             $values['voter_id'] = $viewer->user_id;
             $values['player1_id'] = (int)$wonPlayer == 1 ? $wonUser->user_id : $lossUser->user_id;
             $values['player2_id'] = (int)$wonPlayer == 2 ? $wonUser->user_id : $lossUser->user_id;
@@ -70,21 +92,11 @@ class Photobattle_Model_DbTable_Battles extends Engine_Db_Table
             $values['score_expense'] = $score_expense;
             $values['battle_date'] = date('Y-m-d H:i:s');
 
-            // Set values. Begin Transaction
-            $db = $this->getAdapter();
-            try {
-                $db->beginTransaction();
-
-                $battle = $this->createRow();
-                $battle->setFromArray($values);
-                $battle->save();
-
-                $db->commit();
-            } catch (Exception $e) {
-                $db->rollBack();
-                throw $e;
-            }
+            $battle = $this->createRow();
+            $battle->setFromArray($values);
+            $battle->save();
         }
+        return $battle->getIdentity();
     }
 
     public function getWinnerLastBattleUserId($viewer)
@@ -143,10 +155,20 @@ class Photobattle_Model_DbTable_Battles extends Engine_Db_Table
         return $select;
     }
 
-    // Get Paginator Battles
-    public function getBattlesPaginator($params = array())
+    public function getMyBattleSelect($params)
     {
-        $paginator = Zend_Paginator::factory($this->getBattlesSelect($params));
+        $select = $this
+            ->select()
+            ->from(array('pbattles' => $this->info('name')))
+            ->where('pbattles.player1_id = ?', $params['user_id'])
+            ->orWhere('pbattles.player2_id = ?', $params['user_id']);
+        return $select;
+    }
+
+    // Get Paginator Battles
+    public function getBattlesPaginator($params = array(), $select)
+    {
+        $paginator = Zend_Paginator::factory($select);
 
         if (!empty($params['page'])) {
             $paginator->setCurrentPageNumber($params['page']);

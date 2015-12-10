@@ -10,16 +10,16 @@ class Photobattle_Widget_WinnerLastBattleController extends Engine_Content_Widge
 {
     public function indexAction()
     {
-    //        Loading tables and necessary data
         $this->view->viewer = $viewer = Engine_Api::_()->user()->getViewer();
-        $battleTable = Engine_Api::_()->getDbTable('battles', 'photobattle');
-        $scoreTable = Engine_Api::_()->getDbTable('scores', 'photobattle');
-
 
         if ($viewer->getIdentity() == 0) {
             return $this->setNoRender();
         }
-        
+
+        //        Loading tables and necessary data
+        $battleTable = Engine_Api::_()->getDbTable('battles', 'photobattle');
+        $scoreTable = Engine_Api::_()->getDbTable('scores', 'photobattle');
+
         $winUserId = $battleTable->getWinnerLastBattleUserId($viewer);
         $this->view->winUserId = $winUserId;
         if (!empty($winUserId)) {

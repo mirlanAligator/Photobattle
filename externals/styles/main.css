@@ -26,7 +26,8 @@
     }
 
     /*widget Top - Leader*/
-    #top-user, #player1, #player2, #player-or, .my-data, .my-photo {
+    #top-user, #top10-user, #player1, #player2, #player-or, .my-data, .my-photo,
+    .heading-score > div, .body-score > div {
         display: inline-block;
     }
 
@@ -36,7 +37,7 @@
         margin-bottom: 0.4em;
     }
 
-    .select-gender .active, #top-users #top-user {
+    .select-gender .active, #top-users #top-user, #top10-users > #top10-user {
         border: 1px solid rgba(0, 0, 0, 0.12);
         border-radius: 3px;
         padding: 0.5em;
@@ -58,7 +59,10 @@
     #top-users .top-user-photo, .winner-last-battle-widget-content,
     .winner-last-battle-widget-content .winner h3
     .battle-players .player-or, .last-battle-widget-content,
-    .top-10-description {
+    #top10-users, .heading-score > div,
+    .body-score > div, .body-score .score-user > div, .body-score,
+    .heading-score, .my-data > div,
+    .my-scores {
         text-align: center;
     }
 
@@ -146,7 +150,7 @@
         width: 100%;
     }
 
-    .battle-players, .battle-players .main.item_photo_user.main {
+    .battle-players, .battle-players .main.item_photo_user.main, .my-scores .my-photo img {
         width: 100%;
     }
 
@@ -154,7 +158,7 @@
         width: 10%;
     }
 
-    .battle-players .player {
+    .battle-players .player, #top10-users > #top10-user {
         width: 40%;
     }
 
@@ -173,10 +177,43 @@
 
     .photo-widget {
         height: 7em;
-        margin: 2px
+        margin: 2px;
+    }
+    
+    /* Page Top10*/
+    .top-10-content #top10-users > div {
+        margin: 2px;
+    }
+
+    .top-10-content .select-gender {
+        margin-top: 1em;
+    }
+
+    /* Page Score*/
+    .heading-score > div, .body-score > div {
+        width: 25%;
+    }
+
+    .heading-score > div {
+        background-color: rgba(0, 0, 0, 0.12);
+        font-weight: bold;
+
+    }
+
+    .body-score > div {
+    }
+
+    .body-score > div, .heading-score > div {
+        margin-bottom: 1em;
+        padding: 0.5em;
+    }
+
+    .photobattle-my-scores-mobile {
+        display: none;
     }
 
 }
+
 /*------------------- @MEDIA DINAMYC ----------------------*/
 @media screen and (max-width: 960px) {
     .user-photo {
@@ -277,6 +314,15 @@
 
 }
 
+@media screen and (max-width: 460px) {
+    .photobattle-my-scores-mobile {
+        display: block;
+    }
+    .photobattle-my-scores-mobile .my-data {
+        width: 90%;
+    }
+}
+
 @media screen and (max-width: 360px) {
     .photo {
         height: 6em;
@@ -295,5 +341,3 @@
     }
 
 }
-
-

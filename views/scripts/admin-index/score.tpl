@@ -51,8 +51,8 @@ function selectAll()
       <th><?php echo $this->htmlLink(array('route' => 'admin_default', 'module' => 'photobattle',
                                           'controller' => 'index', 'action' => 'score',
                                           'page' => $this->view->page, 'order' => $this->orderSort),
-                                     $this->translate("Scores")) ?></th>
-      <th><?php echo $this->translate("Winners") ?></th>
+                                     $this->translate("Percent")) ?></th>
+      <th><?php echo $this->translate("Wins") ?></th>
       <th><?php echo $this->translate("Losses") ?></th>
       <th><?php echo $this->translate("Options") ?></th>
     </tr>
@@ -63,7 +63,7 @@ function selectAll()
         <td><input type='checkbox' class='checkbox' name='delete_<?php echo $item->getIdentity(); ?>' value="<?php echo $item->getIdentity(); ?>" /></td>
         <td><?php echo $item->getIdentity(); ?></td>
         <td><?php echo $item->getUserDispayName(); ?></td>
-        <td><?php echo $item->scores; ?></td>
+        <td><?php echo $item->percent . "%"; ?></td>
         <td><?php echo $item->win; ?></td>
         <td><?php echo $item->loss; ?></td>
         <td>

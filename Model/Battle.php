@@ -27,5 +27,21 @@ class Photobattle_Model_Battle extends Core_Model_Item_Abstract
     {
         return Engine_Api::_()->getItem('user', $this->win_id)->getTitle();
     }
+
+    public function getWinnerUser()
+    {
+        return Engine_Api::_()->getItem('user', $this->win_id);
+    }
+
+    public function getLoserUser()
+    {
+        $lossUserId = $this->win_id != $this->player1_id ? $this->player1_id : $this->player2_id;
+        return Engine_Api::_()->getItem('user', $lossUserId);
+    }
+
+    public function getVoterUser()
+    {
+        return Engine_Api::_()->getItem('user', $this->voter_id);
+    }
 }
 

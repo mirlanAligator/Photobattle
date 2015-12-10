@@ -23,6 +23,16 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
         return $userScoreData->scores;
     }
 
+    public function getUserPercent($user_id)
+    {
+        if (empty($user_id)) {
+            return false;
+        }
+        $score = $this->getUserScoreRow($user_id);
+        $percent = $score ? $score->percent : 0;
+        return $percent;
+    }
+
     public function getUserWinsLoss($user_id)
     {
         if (empty($user_id)) {
@@ -66,35 +76,15 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
 
     public function createScore($values)
     {
-        $db = $this->getAdapter();
-        try {
-            $db->beginTransaction();
-
-            $row = $this->createRow();
-            $row->setFromArray($values);
-            $row->save();
-
-            $db->commit();
-        } catch (Exception $e) {
-            $db->rollBack();
-            throw $e;
-        }
+        $row = $this->createRow();
+        $row->setFromArray($values);
+        $row->save();
     }
 
     public function updateScore($row, $values)
     {
-        $db = $this->getAdapter();
-        try {
-            $db->beginTransaction();
-
-            $row->setFromArray($values);
-            $row->save();
-
-            $db->commit();
-        } catch (Exception $e) {
-            $db->rollBack();
-            throw $e;
-        }
+        $row->setFromArray($values);
+        $row->save();
     }
 
     public function getUserScoreData($user_id)
@@ -114,7 +104,10 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
             return $userScoreDataArray;
         }
 
-        return $userScoreData->toArray();
+        $userScoreDataArray = $userScoreData->toArray();
+        $userScoreDataArray['percent'] = round($userScoreDataArray['percent'], 2, PHP_ROUND_HALF_EVEN);
+
+        return $userScoreDataArray;
     }
 
     public function getLeaderUsers($gender = 2, $limit = 10)
@@ -156,9 +149,9 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
     public function getScoresPaginatorSelect($params = array())
     {
         if (!empty($params['order'])) {
-            $select = $this->select()->order("scores " . $params['order']);
+            $select = $this->select()->order("percent " . $params['order']);
         } else {
-            $select = $this->select()->order("scores ASC");
+            $select = $this->select()->order("percent ASC");
         }
         return $select;
     }
@@ -199,10 +192,22 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
             $scoreLossUser->scores = $scoreLossUser->scores + $battle->score_expense;
             $scoreLossUser->loss = $scoreLossUser->loss - 1;
 
+            //Percent
+            $scoreWinUser->percent = $this->getPercent($scoreWinUser);
+            $scoreLossUser->percent = $this->getPercent($scoreLossUser);
+
             // Update Scores
             $scoreWinUser->save();
             $scoreLossUser->save();
         }
+    }
+
+//    get Percent pri udalenii batla
+    public function getPercent($score)
+    {
+        $percent = (100 / ($score->win + $score->loss)) * $score->win;
+        $percent = round($percent, 2, PHP_ROUND_HALF_EVEN);
+        return $percent;
     }
 
     public function getLeaderUsersPercent($gender = 2, $limit = 10)
@@ -222,10 +227,36 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
             ->joinLeft(array('bscores' => $this->info('name')), 'users.user_id = bscores.user_id', array())
             ->where('users.photo_id <> ?', 0)
             ->where('users.enabled = ?', 1)
+            ->where('users.approved = ?', 1)
             ->order('bscores.percent DESC')
             ->limit($limit);
         $rows = $userTable->fetchAll($select);
         return $rows;
+    }
+
+    public function getUserPlace($gender, $user_id)
+    {
+        $percent = $this->getUserPercent($user_id);
+        $fvaluesTable = Engine_Api::_()->fields()->getTable('user', 'values');
+        $userTable = Engine_Api::_()->getItemTable('user');
+
+        $select = $userTable
+            ->select()
+            ->setIntegrityCheck(false)
+            ->from(array('users' => $userTable->info('name')),
+            new Zend_Db_Expr('users.*, IF(`bscores`.percent IS NOT NULL, `bscores`.percent, 0) as percent_f'))
+            ->join(array('fvalues' => $fvaluesTable->info('name')),
+            "users.user_id = fvalues.item_id AND
+                        fvalues.field_id = 5 AND
+                        fvalues.value = $gender", array())
+            ->joinLeft(array('bscores' => $this->info('name')), 'users.user_id = bscores.user_id', array())
+            ->where('users.photo_id <> ?', 0)
+            ->where('users.enabled = ?', 1)
+            ->where('users.approved = ?', 1)
+            ->where('bscores.percent > ?', $percent)
+            ->order('bscores.percent DESC');
+        $rows = $userTable->fetchAll($select);
+        return count($rows) + 1;
     }
 
 }
