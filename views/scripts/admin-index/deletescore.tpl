@@ -8,7 +8,7 @@
     <div>
       <h3><?php echo $this->translate("Delete Score?") ?></h3>
       <p>
-        <?php echo $this->translate("Are you sure that you want to delete this score entry? It will not be recoverable after being deleted.") ?>
+        <?php echo $this->translate("Are you sure that you want to delete this score? It will not be recoverable after being deleted.") ?>
       </p>
       <br />
       <p>

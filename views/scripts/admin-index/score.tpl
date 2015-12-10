@@ -17,7 +17,7 @@
 
 function multiDelete()
 {
-  return confirm("<?php echo $this->translate('Are you sure you want to delete the selected score entries?'); ?>");
+  return confirm("<?php echo $this->translate('Are you sure you want to delete the selected scores?'); ?>");
 }
 
 function selectAll()
@@ -47,7 +47,7 @@ function selectAll()
     <tr>
       <th class='admin_table_short'><input onclick='selectAll();' type='checkbox' class='checkbox' /></th>
       <th class='admin_table_short'>ID</th>
-      <th><?php echo $this->translate("User Name") ?></th>
+      <th><?php echo $this->translate("Username") ?></th>
       <th><?php echo $this->htmlLink(array('route' => 'admin_default', 'module' => 'photobattle',
                                           'controller' => 'index', 'action' => 'score',
                                           'page' => $this->view->page, 'order' => $this->orderSort),
@@ -92,7 +92,7 @@ function selectAll()
 <?php else: ?>
   <div class="tip">
     <span>
-      <?php echo $this->translate("There are no score entries by your members yet.") ?>
+      <?php echo $this->translate("There are no scores by your members yet.") ?>
     </span>
   </div>
 <?php endif; ?>

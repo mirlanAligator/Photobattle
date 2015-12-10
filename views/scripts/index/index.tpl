@@ -60,7 +60,7 @@ $cursorStyle = $this->votePermission ? 'cursor: pointer"' : '';
         </div>
         <!--        --------------------------------->
 
-        <div id="player-or"><h2 class="h-or"><?php echo $this->translate('OR'); ?></h2></div>
+        <div id="player-or"><h2 class="h-or"><?php echo strtoupper($this->translate(' or ')); ?></h2></div>
 
         <!---------------    Player2 ------->
         <div id="player2" class="player">

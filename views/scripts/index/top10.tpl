@@ -14,7 +14,7 @@ $i = 0;
     <!--    HEAD LINE-->
     <div class="headline top-10-description">
         <h2>
-            <?php echo $this->translate('Top 10');?>
+            <?php echo $this->translate("Top 10");?>
         </h2>
     </div>
 
@@ -43,19 +43,19 @@ $i = 0;
                 </div>
                 <div class="user-data">
                     <div class="percent"><?php echo round($user->percent_f , 2, PHP_ROUND_HALF_EVEN) . "%"; ?></div>
-                    <div class="place"><?php echo "$i." . $this->translate("Place"); ?></div>
+                    <div class="place"><?php echo "$i - " . strtolower($this->translate("Place")); ?></div>
                 </div>
             </div>
             <?php } ?>
         <?php } else { ?>
         <div class="tip photobattle">
-            <span><?php echo $this->translate('Members not'); ?></span>
+            <span><?php echo $this->translate('There are no members'); ?></span>
         </div>
         <?php } ?>
     </div>
     <?php } else { ?>
     <div class="tip photobattle">
-        <span><?php echo $this->translate('You do not have permission to view this page.'); ?></span>
+        <span><?php echo $this->translate('You do not have a permission to view this page.'); ?></span>
     </div>
     <?php }?>
 </div>

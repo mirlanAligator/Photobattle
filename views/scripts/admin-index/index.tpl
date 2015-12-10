@@ -16,7 +16,7 @@
 <script type="text/javascript">
 
     function multiDelete() {
-        return confirm("<?php echo $this->translate('Are you sure you want to delete the selected battle entries?'); ?>");
+        return confirm("<?php echo $this->translate('Are you sure you want to delete the selected battles?'); ?>");
     }
 
     function selectAll() {
@@ -48,7 +48,7 @@
             <th><?php echo $this->translate("Voter") ?></th>
             <th><?php echo $this->translate("Player - 1") ?></th>
             <th><?php echo $this->translate("Player - 2") ?></th>
-            <th><?php echo $this->translate("Win Player") ?></th>
+            <th><?php echo $this->translate("Winner") ?></th>
             <th><?php echo $this->htmlLink(array('route' => 'admin_default', 'module' => 'photobattle', 'controller' => 'index',
                                                 'action' => 'index', 'page' => $this->page, 'order' => $this->orderSort)
                 , $this->translate("Date")); ?></th>
@@ -92,7 +92,7 @@
 <?php  } else { ?>
 <div class="tip">
     <span>
-      <?php echo $this->translate("There are no battle entries by your members yet.") ?>
+      <?php echo $this->translate("There are no battles by your members yet.") ?>
     </span>
 </div>
 <?php } ?>

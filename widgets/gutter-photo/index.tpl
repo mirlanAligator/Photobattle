@@ -7,7 +7,7 @@
         <div class="my-data">
             <div class="title"><?php echo $this->htmlLink($this->user->getHref(), $this->user->displayname); ?></div>
             <div class="percent"><?php echo $this->userScore['percent'] . "%"; ?></div>
-            <div class="win"><?php echo $this->translate('Winners') . " : " . $this->userScore['win']; ?></div>
+            <div class="win"><?php echo $this->translate('Wins') . " : " . $this->userScore['win']; ?></div>
             <div class="loss"><?php echo $this->translate('Losses') . " : " . $this->userScore['loss']; ?></div>
             <div class="place"><?php echo $this->translate('Place') . " : " . $this->userPlace; ?></div>
         </div>

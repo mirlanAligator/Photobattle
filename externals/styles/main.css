@@ -74,6 +74,10 @@
         font-weight: bold;
     }
 
+    #top10-user .user-data .place {
+        font-weight: bold;
+    }
+
     /*OR vertical allign */
     .battle-players div {
         vertical-align: middle;

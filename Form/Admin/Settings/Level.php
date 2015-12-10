@@ -14,15 +14,15 @@ class Photobattle_Form_Admin_Settings_Level extends Authorization_Form_Admin_Lev
 
         // My stuff
         $this->setTitle('Member Level Settings')
-                ->setDescription("These settings are applied on a per member level basis. Start by selecting the member level you want to modify, then adjust the settings for that level below.");
+                ->setDescription("PHOTO_BATTLE_FORM_ADMIN_LEVEL_DESCRIPTION");
 
         // Element: view
         $this->addElement('Radio', 'view', array(
-                                                'label' => 'To allow to view Battles?',
-                                                'description' => 'You want to allow participants to view battle? If it is set in not, some other tuning properties on this page can not be applied.',
+                                                'label' => 'Allow Viewing of Battles?',
+                                                'description' => 'Do you want to allow participants to view Battles?',
                                                 'multiOptions' => array(
                                                     1 => 'Yes, allow viewing of battles.',
-                                                    0 => "No, you don't allow to view battle.",
+                                                    0 => "No, don't allow",
                                                 ),
                                                 'value' => 1,
                                            ));
@@ -30,7 +30,7 @@ class Photobattle_Form_Admin_Settings_Level extends Authorization_Form_Admin_Lev
         // Element: vote
         $this->addElement('Radio', 'vote', array(
                                                 'label' => 'Allow Voting of Battles?',
-                                                'description' => 'Do you want to let members vote battles? If set to no, some other settings on this page may not apply.',
+                                                'description' => 'Do you want to let members vote battles?',
                                                 'multiOptions' => array(
                                                     1 => 'Yes, allow voting of battles.',
                                                     0 => 'No, do not allow battles to be voted.',
@@ -40,11 +40,11 @@ class Photobattle_Form_Admin_Settings_Level extends Authorization_Form_Admin_Lev
 
         // Element: view page Top10
         $this->addElement('Radio', 'view_top10', array(
-                                                'label' => 'To allow viewing of the     Top 10 page?',
-                                                'description' => 'Do you want to permit to participants viewing of the Top10 page? If set to no, some other settings on this page may not apply.',
+                                                'label' => 'Allow Viewing of Top 10 page?',
+                                                'description' => 'Do you want to allow participants viewing of Top 10 page?',
                                                 'multiOptions' => array(
-                                                    1 => 'Yes I allow viewing of the Top10 page.',
-                                                    0 => "No, I don't allow viewing of the Top10 page.",
+                                                    1 => 'Yes, allow viewing of Top 10 page.',
+                                                    0 => "No, don't allow Top 10 page to be viewed.",
                                                 ),
                                                 'value' =>  1,
                                            ));
@@ -52,11 +52,11 @@ class Photobattle_Form_Admin_Settings_Level extends Authorization_Form_Admin_Lev
 
         // Element: view page My Scores
         $this->addElement('Radio', 'view_score', array(
-                                                'label' => "To allow viewing of the My Scores page?",
-                                                'description' => "Do you want to permit to participants viewing of the My Scores page? If set to no, some other settings on this page may not apply.",
+                                                'label' => "Allow Viewing of My Scores page?",
+                                                'description' => "Do you want to allow participants viewing of My Scores page?",
                                                 'multiOptions' => array(
-                                                    1 => "Yes I allow viewing of the My Scores page",
-                                                    0 => "No, I don't allow viewing of the My Scores page.",
+                                                    1 => "Yes, allow viewing of My Scores page.",
+                                                    0 => "No, don't allow viewing of My Scores page.",
                                                 ),
                                                 'value' =>  1,
                                            ));
@@ -64,11 +64,11 @@ class Photobattle_Form_Admin_Settings_Level extends Authorization_Form_Admin_Lev
 
         // Element: view page My Scores
         $this->addElement('Radio', 'stranger_score', array(
-                                                'label' => "To allow viewing of results of battle of other users?",
-                                                'description' => "You want to allow this level to view results of battle of other users? If set to no, some other settings on this page may not apply.",
+                                                'label' => "Allow Viewing of other users results?",
+                                                'description' => "Do you want to allow this level to view other users results?",
                                                 'multiOptions' => array(
-                                                    1 => "Yes I allow to view results of battle of other users.",
-                                                    0 => "No, I don't allow to view results of battle of other users.",
+                                                    1 => "Yes, allow viewing of results.",
+                                                    0 => "No, don't allow results to be viewed.",
                                                 ),
                                                 'value' =>  1,
                                            ));

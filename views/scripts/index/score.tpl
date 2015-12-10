@@ -11,7 +11,7 @@
             <div class="my-data">
               <div class="title"><?php echo $this->htmlLink($this->user->getHref(), $this->user->displayname); ?></div>
               <div class="percent"><?php echo $this->userScore['percent'] . "%"; ?></div>
-              <div class="win"><?php echo $this->translate('Winners') . " : " . $this->userScore['win']; ?></div>
+              <div class="win"><?php echo $this->translate('Wins') . " : " . $this->userScore['win']; ?></div>
               <div class="loss"><?php echo $this->translate('Losses') . " : " . $this->userScore['loss']; ?></div>
               <div class="place"><?php echo $this->translate('Place') . " : " . $this->userPlace; ?></div>
             </div>
@@ -99,7 +99,7 @@
         <?php } else {?>
           <div class="tip photobattle">
             <span>
-          <?php echo $this->translate("This user didn't participate in one battle yet."); ?>
+          <?php echo $this->translate("This user has not participated in a battle yet."); ?>
             </span>
           </div>
         <?php } ?>
@@ -129,7 +129,7 @@
     </div>
     <div class="tip photobattle">
         <span>
-            <?php echo $this->translate("You have no permission of viewing of this page."); ?>
+            <?php echo $this->translate("You do not have a permission to view this page."); ?>
         </span>
     </div>
   <?php } ?>
