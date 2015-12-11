@@ -63,7 +63,7 @@ function selectAll()
         <td><input type='checkbox' class='checkbox' name='delete_<?php echo $item->getIdentity(); ?>' value="<?php echo $item->getIdentity(); ?>" /></td>
         <td><?php echo $item->getIdentity(); ?></td>
         <td><?php echo $item->getUserDispayName(); ?></td>
-        <td><?php echo $item->percent . "%"; ?></td>
+        <td><?php echo ($item->percent / 100) . "%"; ?></td>
         <td><?php echo $item->win; ?></td>
         <td><?php echo $item->loss; ?></td>
         <td>

@@ -29,7 +29,7 @@ $userScore = array();
                     ?>
                 </div>
                 <div class="user-data">
-                    <div class="percent"><?php echo round($user->percent_f , 2, PHP_ROUND_HALF_EVEN) . "%"; ?></div>
+                    <div class="percent"><?php echo $user->percent_f / 100 . "%"; ?></div>
                     <!--                    <div class="title">-->
                         <?php //echo $this->htmlLink($user->getHref(), $user->displayname); ?><!--</div>-->
                     <!--                    --><?php //$userScore = $this->scoreTable->getUserScoreData($user->user_id) ?>

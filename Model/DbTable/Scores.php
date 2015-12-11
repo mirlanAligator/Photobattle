@@ -105,7 +105,7 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
         }
 
         $userScoreDataArray = $userScoreData->toArray();
-        $userScoreDataArray['percent'] = round($userScoreDataArray['percent'], 2, PHP_ROUND_HALF_EVEN);
+        $userScoreDataArray['percent'] = $userScoreDataArray['percent'] / 100;
 
         return $userScoreDataArray;
     }
@@ -127,6 +127,7 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
             ->joinLeft(array('bscores' => $this->info('name')), 'users.user_id = bscores.user_id', array())
             ->where('users.photo_id <> ?', 0)
             ->where('users.enabled = ?', 1)
+            ->where('users.approved = ?', 1)
             ->order('scores_f DESC')
             ->limit($limit);
         $rows = $userTable->fetchAll($select);
@@ -206,7 +207,7 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
     public function getPercent($score)
     {
         $percent = (100 / ($score->win + $score->loss)) * $score->win;
-        $percent = round($percent, 2, PHP_ROUND_HALF_EVEN);
+        $percent = $percent / 100;
         return $percent;
     }
 
@@ -255,12 +256,11 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
             ->where('users.photo_id <> ?', 0)
             ->where('users.enabled = ?', 1)
             ->where('users.approved = ?', 1)
-            ->where('users.user_id <> ?', $user_id)
-            ->where('bscores.percent > ?', $percent)
+            ->where('bscores.percent >= ?', $percent)
             ->group('bscores.percent')
             ->order('bscores.percent DESC');
         $rows = $userTable->fetchAll($select);
-        return count($rows) + 1;
+        return count($rows);
     }
 
 }
