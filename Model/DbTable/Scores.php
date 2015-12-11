@@ -255,11 +255,12 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
             ->where('users.photo_id <> ?', 0)
             ->where('users.enabled = ?', 1)
             ->where('users.approved = ?', 1)
-            ->where('bscores.percent >= ?', $percent)
+            ->where('users.user_id <> ?', $user_id)
+            ->where('bscores.percent > ?', $percent)
             ->group('bscores.percent')
             ->order('bscores.percent DESC');
         $rows = $userTable->fetchAll($select);
-        return count($rows);
+        return count($rows) + 1;
     }
 
 }

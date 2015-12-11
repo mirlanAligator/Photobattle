@@ -304,7 +304,6 @@ class Photobattle_IndexController extends Core_Controller_Action_Standard
         }
 
         $percent = (100 / ($playerWons + $playerLosses)) * $playerWons;
-        $percent = round($percent, 2, PHP_ROUND_HALF_EVEN);
         return $percent;
     }
 

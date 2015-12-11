@@ -43,7 +43,7 @@ $i = 0;
                 </div>
                 <div class="user-data">
                     <div class="percent"><?php echo round($user->percent_f , 2, PHP_ROUND_HALF_EVEN) . "%"; ?></div>
-                    <div class="place"><?php echo "$i - " . strtolower($this->translate("Place")); ?></div>
+                    <div class="place"><?php echo $this->scoreTable->getUserPlace($this->gender, $user->getIdentity()) ."-". strtolower($this->translate("Place")); ?></div>
                 </div>
             </div>
             <?php } ?>

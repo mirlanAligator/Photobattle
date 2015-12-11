@@ -84,7 +84,6 @@ class Photobattle_Model_DbTable_Battles extends Engine_Db_Table
 
         //            Check battle exists
         if (!$this->battleHashExists($values['battle_hash'])) {
-            //            print_arr($values['battle_hash'] . "  Exists!!  |  $wonUser->user_id * $lossUser->user_id");
             $values['voter_id'] = $viewer->user_id;
             $values['player1_id'] = (int)$wonPlayer == 1 ? $wonUser->user_id : $lossUser->user_id;
             $values['player2_id'] = (int)$wonPlayer == 2 ? $wonUser->user_id : $lossUser->user_id;
