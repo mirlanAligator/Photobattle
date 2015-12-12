@@ -28,7 +28,7 @@ CREATE TABLE `engine4_photobattle_battles` (
 	INDEX `player1_id` (`player1_id`),
 	INDEX `player2_id` (`player2_id`)
 )
-COLLATE='latin1_swedish_ci'
+COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 AUTO_INCREMENT=1
 ;
@@ -39,15 +39,16 @@ CREATE TABLE `engine4_photobattle_scores` (
 	`user_id` INT(11) NOT NULL,
 	`photo_id` INT(11) NOT NULL,
 	`scores` INT(11) NOT NULL,
-	`percent` FLOAT NOT NULL,
+	`percent` INT(11) NOT NULL,
 	`win` INT(11) NOT NULL,
 	`loss` INT(11) NOT NULL,
 	PRIMARY KEY (`score_id`),
 	UNIQUE INDEX `user_id` (`user_id`),
 	INDEX `photo_id` (`photo_id`)
 )
-COLLATE='latin1_swedish_ci'
+COLLATE='utf8_general_ci'
 ENGINE=InnoDB
-AUTO_INCREMENT=868
+AUTO_INCREMENT=1
 ;
+
 

@@ -25,10 +25,10 @@ class Photobattle_Plugin_Core
                 if ($userScore->photo_id != $user->photo_id) {
                     $userScore->delete();
 
-                //Delete Battles --------------
-                $battleTable = Engine_Api::_()->getItemTable('photobattle_battle');
-                //Removal of all the battles that the user was
-                $battleTable->deleteUserParticipateBattles($user_id);
+                    //Delete Battles --------------
+                    $battleTable = Engine_Api::_()->getItemTable('photobattle_battle');
+                    //Removal of all the battles that the user was
+                    $battleTable->deleteUserParticipateBattles($user_id);
                 }
             }
         }
@@ -54,6 +54,34 @@ class Photobattle_Plugin_Core
             $battleTable->deleteUserParticipateBattles($user_id);
             //Removal of all the battles that the user has voted
             $battleTable->deleteUserVotedBattles($user_id);
+        }
+    }
+
+    public function onPhotobattleBattleDeleteBefore(Engine_Hooks_Event $event)
+    {
+        $battle = $event->getPayload();
+
+        if ($battle instanceof Photobattle_Model_Battle) {
+
+            //  Retraces the scores
+            $scoreTable = Engine_Api::_()->getItemTable('photobattle_score');
+            $scoreTable->retracesScores($battle);
+        }
+    }
+
+    public function onPhotobattleScoreDeleteBefore(Engine_Hooks_Event $event)
+    {
+        $score = $event->getPayload();
+
+        if ($score instanceof Photobattle_Model_Score) {
+
+            // Removal of battles that involved party
+            $owner = $score->getOwnerScore();
+            $battleTable = Engine_Api::_()->getItemTable('photobattle_battle');
+
+            if (!empty($owner)) {
+                $battleTable->deleteUserParticipateBattles($owner->getIdentity());
+            }
         }
     }
 }

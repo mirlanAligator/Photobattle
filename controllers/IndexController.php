@@ -4,7 +4,6 @@ class Photobattle_IndexController extends Core_Controller_Action_Standard
 {
     public function indexAction()
     {
-
         $this->view->viewer = $viewer = Engine_Api::_()->user()->getViewer();
         //        print_die(Engine_Api::_()->fields()->getFieldsValuesByAlias($viewer));
         //                print_die(Engine_Api::_()->fields()->getFieldsOptions($viewer));

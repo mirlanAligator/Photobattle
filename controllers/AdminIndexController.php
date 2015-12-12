@@ -29,11 +29,10 @@ class Photobattle_AdminIndexController extends Core_Controller_Action_Admin
                         if ($key == 'delete_' . $value) {
                             $battle = Engine_Api::_()->getItem('photobattle_battle', $value);
 
-                            //  Retraces the scores
-                            $scoreTable = Engine_Api::_()->getItemTable('photobattle_score');
-                            $scoreTable->retracesScores($battle);
-
-                            $battle->delete();
+                            //Delete battle
+                            if (!empty($battle)) {
+                                $battle->delete();
+                            }
                         }
                     }
 
@@ -70,12 +69,11 @@ class Photobattle_AdminIndexController extends Core_Controller_Action_Admin
             {
                 $battle = Engine_Api::_()->getItem('photobattle_battle', $id);
 
-                //  Retraces the scores
-                $scoreTable = Engine_Api::_()->getItemTable('photobattle_score');
-                $scoreTable->retracesScores($battle);
+                if (empy($battle)){
 
-                // delete the Battle entry into the database
-                $battle->delete();
+                    //Delete battle
+                    $battle->delete();
+                }
                 $db->commit();
             }
 
@@ -109,20 +107,11 @@ class Photobattle_AdminIndexController extends Core_Controller_Action_Admin
             // Delete selected scores
             if (!empty($values)) {
                 $db = $scoreTable->getAdapter();
+                $db->beginTransaction();
                 try {
-                    $db->beginTransaction();
-
                     foreach ($values as $key => $value) {
                         if ($key == 'delete_' . $value) {
                             $score = Engine_Api::_()->getItem('photobattle_score', $value);
-
-                            // Removal of battles that involved party
-                            $owner = $score->getOwnerScore();
-                            $battleTable = Engine_Api::_()->getItemTable('photobattle_battle');
-
-                            if (!empty($owner)) {
-                                $battleTable->deleteUserParticipateBattles($owner->getIdentity());
-                            }
 
                             //Score Delete
                             $score->delete();
@@ -161,14 +150,6 @@ class Photobattle_AdminIndexController extends Core_Controller_Action_Admin
             try
             {
                 $score = Engine_Api::_()->getItem('photobattle_score', $id);
-
-                // Removal of battles that involved party
-                $battleTable = Engine_Api::_()->getItemTable('photobattle_battle');
-                $owner = $score->getOwnerScore();
-
-                if (!empty($owner)) {
-                    $battleTable->deleteUserParticipateBattles($owner->getIdentity());
-                }
 
                 // delete the Score entry into the database
                 $score->delete();

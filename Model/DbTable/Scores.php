@@ -23,16 +23,6 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
         return $userScoreData->scores;
     }
 
-    public function getUserPercent($user_id)
-    {
-        if (empty($user_id)) {
-            return false;
-        }
-        $score = $this->getUserScoreRow($user_id);
-        $percent = $score ? $score->percent : 0;
-        return $percent;
-    }
-
     public function getUserWinsLoss($user_id)
     {
         if (empty($user_id)) {
@@ -206,8 +196,8 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
 //    get Percent pri udalenii batla
     public function getPercent($score)
     {
-        $percent = (100 / ($score->win + $score->loss)) * $score->win;
-        $percent = $percent / 100;
+        $percent = ((100 / ($score->win + $score->loss)) * $score->win);
+        $percent = (round($percent, 2, PHP_ROUND_HALF_EVEN)) * 100;
         return $percent;
     }
 
@@ -233,6 +223,16 @@ class Photobattle_Model_DbTable_Scores extends Engine_Db_Table
             ->limit($limit);
         $rows = $userTable->fetchAll($select);
         return $rows;
+    }
+
+    public function getUserPercent($user_id)
+    {
+        if (empty($user_id)) {
+            return false;
+        }
+        $score = $this->getUserScoreRow($user_id);
+        $percent = $score ? $score->percent : 0;
+        return $percent;
     }
 
     public function getUserPlace($gender, $user_id)

@@ -124,11 +124,27 @@ class Photobattle_Model_DbTable_Battles extends Engine_Db_Table
         if (empty($user_id)) {
             return null;
         }
+        $i = 0;
+        $select = $this->getMyBattleSelect(array('user_id' => $user_id));
+        $battles = $this->fetchAll($select);
 
-        $where1 = $this->getAdapter()->quoteInto('player1_id = ?', $user_id);
-        $where2 = $this->getAdapter()->quoteInto('player2_id = ?', $user_id);
+        if (!count($battles)) {
+            return $i;
+        }
 
-        return $this->delete($where1) + $this->delete($where2);
+        try {
+            foreach ($battles as $battle) {
+                $battle->delete();
+                $i++;
+            }
+        } catch (Exception $e) {
+            throw $e;
+        }
+        return $i;
+        //        $where1 = $this->getAdapter()->quoteInto('player1_id = ?', $user_id);
+        //        $where2 = $this->getAdapter()->quoteInto('player2_id = ?', $user_id);
+
+        //        return $this->delete($where1) + $this->delete($where2);
     }
 
     //Removal of all the battles that the user has voted
@@ -137,10 +153,23 @@ class Photobattle_Model_DbTable_Battles extends Engine_Db_Table
         if (empty($user_id)) {
             return null;
         }
+        $i = 0;
+        $select = $this->select()->where('voter_id = ?', $user_id);
+        $battles = $this->fetchAll($select);
 
-        $where = $this->getAdapter()->quoteInto('voter_id = ?', $user_id);
-        $this->view->paginatop(array(''));
-        return $this->delete($where);
+        if (!count($battles)) {
+            return $i;
+        }
+
+        try {
+            foreach ($battles as $battle) {
+                $battle->delete();
+                $i++;
+            }
+        } catch (Exception $e) {
+            throw $e;
+        }
+        return $i;
     }
 
 //    Get Battle select to Paginator
