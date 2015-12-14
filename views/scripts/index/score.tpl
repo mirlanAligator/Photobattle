@@ -1,6 +1,7 @@
 <div class="my-score-page-content">
   <!--    Check view Permision-->
   <?php if ($this->permission) { ?>
+    <?php if ($this->permissionOtherMyScores) { ?>
     <?php if ($this->viewer->photo_id != 0) { ?>
 
       <div class="photobattle-my-scores-mobile">
@@ -119,6 +120,20 @@
         </span>
       </div>
     <?php } ?>
+
+        <!--     else permissionOtherMyScores = 0-->
+      <?php } else { ?>
+        <div class="headline">
+          <h2>
+            <?php echo $this->translate("My Scores"); ?>
+          </h2>
+        </div>
+        <div class="tip photobattle">
+            <span>
+                <?php echo $this->translate("You do not have permission to view battles."); ?>
+            </span>
+        </div>
+      <?php } ?>
 
     <!--     else permission = 0-->
   <?php } else { ?>
